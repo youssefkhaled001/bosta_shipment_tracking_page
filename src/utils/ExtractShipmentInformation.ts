@@ -1,12 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * This module handles the extraction and processing of shipment information from raw shipment data.
+ * It converts timestamps into localized dates and organizes transit events chronologically.
+ */
+
 import { ShipmentInfo } from "../contexts/MainContext";
+
+/**
+ * Processes raw shipment data and extracts relevant information in a structured format
+ * @param props Component props containing shipment data, language preference, and state setter
+ */
 export default function ExtractShipmentInformation({ shipment, language, setShipment }: any) {
-    const GeneralDateOptions: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', weekday: 'long' };
-    const TrackingNumber = shipment.TrackingNumber
-    const CreateDate = new Date(shipment.CreateDate).toLocaleDateString(language == 'en' ? 'en-US' : 'ar', GeneralDateOptions)
-    const ScheduledDate = new Date(shipment.ScheduledDate).toLocaleDateString(language == 'en' ? 'en-US' : 'ar', GeneralDateOptions)
-    const PromisedDate = new Date(shipment.PromisedDate).toLocaleDateString(language == 'en' ? 'en-US' : 'ar', GeneralDateOptions)
-    const StatusCode = shipment.CurrentStatus.code
+    // Date formatting options for general dates
+    const GeneralDateOptions: Intl.DateTimeFormatOptions = {
+        month: 'short',
+        day: 'numeric',
+        weekday: 'long'
+    };
+
+    // Format locale string based on language preference
+    const locale = language === 'en' ? 'en-US' : 'ar';
+
+     // Extract and format basic shipment information
+    const TrackingNumber = shipment.TrackingNumber;
+    const CreateDate = new Date(shipment.CreateDate)
+        .toLocaleDateString(locale, GeneralDateOptions);
+    const ScheduledDate = new Date(shipment.ScheduledDate)
+        .toLocaleDateString(locale, GeneralDateOptions);
+    const PromisedDate = new Date(shipment.PromisedDate)
+        .toLocaleDateString(locale, GeneralDateOptions);
+    const StatusCode = shipment.CurrentStatus.code;
+
+    // Map status codes to readable status messages
     let Status: "Created" | "Picked Up" | "In Transit" | "Out For Delivery" | "Delivered" | "Returned" | "Rescheduled";
     switch (StatusCode) {
         case 45:
@@ -31,8 +56,10 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
             Status = "Created"
             break
     }
+
+    // Process transit events and group them by date
     const Events = shipment.TransitEvents?.reduce((acc: ShipmentInfo["Events"], event: any) => {
-        // Extract date and time
+        // Configure date and time formatting options
         const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric', weekday: 'long' };
         const eventDate = new Date(event.timestamp).toLocaleDateString(language == 'en' ? 'en-US' : 'ar', dateOptions);
         const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
@@ -55,14 +82,20 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
 
         return acc;
     }, []) ?? []
+
+    // Reverse Each Date events order for getting latest events first
     Events.map((event: any) => event.events?.reverse());
+    // Reverse Dates order for getting latest dates first
     Events.reverse()
+
+    // Extract important milestone dates from events
     let ShipmentDate = "";
     let PickedUpDate = "";
     let InTransitDate = "";
     let OutForDeliveryDate = "";
     let DeliveredDate = "";
 
+    // Iterate through events to find milestone timestamps
     Events.forEach((DateEvents: { date: string; events: any[] }) => {
         DateEvents.events.forEach((event) => {
             if (event.code === 24) {
@@ -79,6 +112,7 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
         });
     });
 
+    // Construct final shipment information object
     const shipmentInfo: ShipmentInfo = {
         TrackingNumber,
         CreateDate,
@@ -93,5 +127,7 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
         OutForDeliveryDate,
         DeliveredDate,
     };
+
+    // Update shipment state with processed information
     setShipment(shipmentInfo)
 }
