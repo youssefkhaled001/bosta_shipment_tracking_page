@@ -1,8 +1,10 @@
+import { useLanguage } from "./contexts/LanguageContext"
+
 function App() {
-
-  return (
+  const {language} = useLanguage();
+    return (
     <div className="font-rubik w-full h-full">
-
+      {language}
     </div>
   )
 }
