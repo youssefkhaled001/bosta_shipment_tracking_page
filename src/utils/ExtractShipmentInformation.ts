@@ -35,7 +35,6 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
         // Extract date and time
         const dateOptions: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric', weekday: 'long' };
         const eventDate = new Date(event.timestamp).toLocaleDateString(language == 'en' ? 'en-US' : 'ar', dateOptions);
-        console.log(eventDate)
         const timeOptions: Intl.DateTimeFormatOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
         const eventTime = new Date(event.timestamp).toLocaleTimeString(language == 'en' ? 'en-US' : 'ar', timeOptions);
 
@@ -94,6 +93,5 @@ export default function ExtractShipmentInformation({ shipment, language, setShip
         OutForDeliveryDate,
         DeliveredDate,
     };
-    console.log(shipmentInfo)
     setShipment(shipmentInfo)
 }

@@ -61,7 +61,7 @@ function HorizontalTimeLine({ Steps }: { Steps: { title: string, description: st
             </div>
           </div>
           {/* Mobile */}
-          <div className='flex flex-row items-center justify-start sm:hidden gap-x-3'>
+          <div className='flex flex-row items-center justify-start sm:hidden gap-x-3' key={index+"_2"}>
             <div className='flex flex-col justify-center items-center'>
               {index !== 0 && <div className='w-0 h-5' style={!step.done ? {
                 border: '1.75px dashed var(--light-gray)',

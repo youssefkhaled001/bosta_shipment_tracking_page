@@ -45,7 +45,11 @@ function SearchBar({ language, setShipment, setLoading, setError }: any) {
                     borderTopRightRadius: '0.5rem',
                     borderBottomRightRadius: '0.5rem',
                 }}
-                value={searchText} onChange={(e) => setSearchText(e.target.value)} />
+                value={searchText} onChange={(e) => setSearchText(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter')
+                        search({ searchText, setShipment, setLoading, setError, setShipmentState, setLastSearch, lastSearch, Bosta_API_Route })
+                }} />
         </div>
     )
 }
