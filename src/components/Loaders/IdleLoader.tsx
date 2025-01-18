@@ -1,4 +1,4 @@
-import './IdleLoader.css'
+import './idleLoader.css'
 const IdleLoader = () => {
   return (
     <>
