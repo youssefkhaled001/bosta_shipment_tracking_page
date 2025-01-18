@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+:root {
+  --background-footer-gradient: #1DBDCD;
+  --light-gray: #E4E7EC;
+  --shadow-gray: #1D29390D;
+  --text-dark-gray: #111619;
+  --text-light-gray: #667085;
+  --teal: #0098A5;
+  --red: #E30613;
+}
